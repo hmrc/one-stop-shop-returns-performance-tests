@@ -1,7 +1,20 @@
 **This is a template README.md.  Be sure to update this with project specific content that describes your performance test project.**
 
 # one-stop-shop-returns-performance-tests
-Performance test suite for the `<digital service name>`, using [performance-test-runner](https://github.com/hmrc/performance-test-runner) under the hood.
+Performance test suite for the `one-stop-shop-returns-frontend`, using [performance-test-runner](https://github.com/hmrc/performance-test-runner) under the hood.
+
+## Amend one-stop-shop-returns-frontend application.conf
+Amend the section for one-stop-shop-registration in application.conf to:
+```
+one-stop-shop-registration {
+    protocol = http
+    host     = localhost
+    port     = 10203
+    basePath = "one-stop-shop-registration-stub"
+}
+```
+This will use the registrations stub to check registrations exist for the users in the returns service,
+instead of having to populate the database prior to the performance test.
 
 
 ## Running the tests
