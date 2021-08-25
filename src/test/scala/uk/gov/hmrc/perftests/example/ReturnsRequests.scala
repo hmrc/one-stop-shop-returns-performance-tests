@@ -124,35 +124,20 @@ object ReturnsRequests extends ServicesConfiguration {
       .check(status.in(200,303))
   }
 
-  def getNetValueOfSalesFromNi(countryIndex: Int, vatRateIndex: Int) = {
-    http("Get Net Value Of Sales From NI page")
-      .get(fullUrl + s"/2021-Q3/netValueOfSalesFromNi/$countryIndex/$vatRateIndex")
+  def getSalesAtVatRateFromNi(countryIndex: Int, vatRateIndex: Int) = {
+    http("Get Sales at Vat Rate From NI page")
+      .get(fullUrl + s"/2021-Q3/salesAtVatRateFromNi/$countryIndex/$vatRateIndex")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
   }
 
-  def postNetValueOfSalesFromNi(countryIndex: Int, vatRateIndex: Int) = {
-    http("Post Net Value Of Sales From NI Country")
-      .post(fullUrl + s"/2021-Q3/netValueOfSalesFromNi/$countryIndex/$vatRateIndex")
+  def postSalesAtVatRateFromNi(countryIndex: Int, vatRateIndex: Int) = {
+    http("Post Sales at Vat Rate From NI Country")
+      .post(fullUrl + s"/2021-Q3/salesAtVatRateFromNi/$countryIndex/$vatRateIndex")
       .formParam("csrfToken", "${csrfToken}")
-      .formParam("value", "50000")
-      .check(status.in(200,303))
-  }
-
-  def getVatOnSalesFromNi(countryIndex: Int, totalSalesIndex: Int) = {
-    http("Get Vat On Sales From NI page")
-      .get(fullUrl + s"/2021-Q3/vatOnSalesFromNi/$countryIndex/$totalSalesIndex")
-      .header("Cookie", "mdtp=${mdtpCookie}")
-      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
-      .check(status.in(200))
-  }
-
-  def postVatOnSalesFromNi(countryIndex: Int, totalSalesIndex: Int) = {
-    http("Post Vat On Sales From NI Country")
-      .post(fullUrl + s"/2021-Q3/vatOnSalesFromNi/$countryIndex/$totalSalesIndex")
-      .formParam("csrfToken", "${csrfToken}")
-      .formParam("value", "10000")
+      .formParam("netValueOfSales", "50000")
+      .formParam("vatOnSales", "10000")
       .check(status.in(200,303))
   }
 
