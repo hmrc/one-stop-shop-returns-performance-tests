@@ -47,7 +47,24 @@ class ReturnsSimulation extends PerformanceTestRunner {
     getCheckSalesFromNi(2),
     postCheckSalesFromNi(2),
     getAddSalesFromNi,
-    postAddSalesFromNi(false)
+    postAddSalesFromNi(false),
+    getSoldGoodsFromEu,
+    postSoldGoodsFromEu,
+    getCountryOfSaleFromEu(1),
+    postCountryOfSaleFromEu(1, "ES"),
+    getCountryOfConsumptionFromEu(1,1),
+    postCountryOfConsumptionFromEu(1,1,"FR"),
+    getVatRatesFromEu(1,1),
+    postVatRatesFromEu(1,1, "21.0"),
+    getSalesAtVatRateFromEu(1,1,1),
+    postSalesAtVatRateFromEu(1,1,1),
+    getCheckSalesToEu(1,1),
+    postCheckSalesToEu(1,1),
+    getAddSalesToEu(1),
+    postAddSalesToEu(1, false),
+    getAddSalesFromEu,
+    postAddSalesFromEu(false),
+    getCheckYourAnswers
   )
 
   runSimulation()
