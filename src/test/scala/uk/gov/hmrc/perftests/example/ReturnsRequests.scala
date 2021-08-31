@@ -256,15 +256,34 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def getAddSalesFromEu =
     http("Get Add Sales From EU page")
-      .get(fullUrl + s"/2021-Q3/add-sales-from-eu")
+      .get(fullUrl + "/2021-Q3/add-sales-from-eu")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postAddSalesFromEu(answer: Boolean) =
     http("Post Add Sales From EU")
-      .post(fullUrl + s"/2021-Q3/add-sales-from-eu")
+      .post(fullUrl + "/2021-Q3/add-sales-from-eu")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", answer)
       .check(status.in(200, 303))
+
+  def getCheckYourAnswers =
+    http("Get Check Your Answers page")
+      .get(fullUrl + "/2021-Q3/check-your-answers")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postCheckYourAnswers =
+    http("Post Check Your Answers page")
+      .post(fullUrl + "/2021-Q3/check-your-answers")
+      .formParam("csrfToken", "${csrfToken}")
+      .check(status.in(200, 303))
+
+  def getReturnSubmitted =
+    http("Get Return Submitted page")
+      .get(fullUrl + "/2021-Q3/successful")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(status.in(200))
 }
