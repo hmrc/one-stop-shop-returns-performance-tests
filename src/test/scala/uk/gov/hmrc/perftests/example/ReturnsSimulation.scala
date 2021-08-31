@@ -87,7 +87,10 @@ class ReturnsSimulation extends PerformanceTestRunner {
     getAddSalesToEu(2),
     postAddSalesToEu(2, false),
     getAddSalesFromEu,
-    postAddSalesFromEu(false)
+    postAddSalesFromEu(false),
+    getCheckYourAnswers,
+    postCheckYourAnswers,
+    getReturnSubmitted
   )
 
   runSimulation()
