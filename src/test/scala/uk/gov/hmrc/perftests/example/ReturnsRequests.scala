@@ -33,14 +33,13 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def inputSelectorByName(name: String): Expression[String] = s"input[name='$name']"
 
-  def goToAuthLoginPage = {
+  def goToAuthLoginPage =
     http("Go to Auth login page")
       .get(loginUrl + s"/auth-login-stub/gg-sign-in")
       .check(status.in(200, 303))
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
-  }
 
-  def upFrontAuthLogin = {
+  def upFrontAuthLogin =
     http("Enter Auth login credentials ")
       .post(loginUrl + s"/auth-login-stub/gg-sign-in")
       .formParam("csrfToken", "${csrfToken}")
@@ -58,118 +57,214 @@ object ReturnsRequests extends ServicesConfiguration {
       .formParam("enrolment[0].state", "Activated")
       .check(status.in(200, 303))
       .check(headerRegex("Set-Cookie", """mdtp=(.*)""").saveAs("mdtpCookie"))
-  }
 
-  def getStartReturn = {
+  def getStartReturn =
     http("Get Start Return page")
       .get(fullUrl + "/2021-Q3/startReturn")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
-  }
 
-  def postStartReturn = {
+  def postStartReturn =
     http("Post Start Returns")
       .post(fullUrl + "/2021-Q3/startReturn")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", true)
-      .check(status.in(200,303))
-  }
+      .check(status.in(200, 303))
 
-  def getSoldGoodsFromNi = {
+  def getSoldGoodsFromNi =
     http("Get Sold Goods From Ni page")
       .get(fullUrl + "/2021-Q3/soldGoodsFromNi")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
-  }
 
-  def postSoldGoodsFromNi = {
+  def postSoldGoodsFromNi =
     http("Post Sold Goods From Ni Country")
       .post(fullUrl + "/2021-Q3/soldGoodsFromNi")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", true)
-      .check(status.in(200,303))
-  }
+      .check(status.in(200, 303))
 
-  def getCountryOfConsumptionFromNi (index: Int) = {
+  def getCountryOfConsumptionFromNi(index: Int) =
     http("Get Country Of Consumption From NI page")
       .get(fullUrl + s"/2021-Q3/countryOfConsumptionFromNi/$index")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
-  }
 
-  def postCountryOfConsumptionFromNi (index: Int, countryCode: String)= {
+  def postCountryOfConsumptionFromNi(index: Int, countryCode: String) =
     http("Post Country Of Consumption From NI Country")
       .post(fullUrl + s"/2021-Q3/countryOfConsumptionFromNi/$index")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", countryCode)
-      .check(status.in(200,303))
-  }
+      .check(status.in(200, 303))
 
-  def getVatRatesFromNi(index: Int) = {
+  def getVatRatesFromNi(index: Int) =
     http("Get Vat Rates From NI page")
       .get(fullUrl + s"/2021-Q3/vatRatesFromNi/$index")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
-  }
 
-  def postVatRatesFromNi(index: Int, vatRate: String) = {
+  def postVatRatesFromNi(index: Int, vatRate: String) =
     http("Post Vat Rates From NI Country")
       .post(fullUrl + s"/2021-Q3/vatRatesFromNi/$index")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value[0]", vatRate)
-      .check(status.in(200,303))
-  }
+      .check(status.in(200, 303))
 
-  def getSalesAtVatRateFromNi(countryIndex: Int, vatRateIndex: Int) = {
+  def getSalesAtVatRateFromNi(countryIndex: Int, vatRateIndex: Int) =
     http("Get Sales at Vat Rate From NI page")
       .get(fullUrl + s"/2021-Q3/salesAtVatRateFromNi/$countryIndex/$vatRateIndex")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
-  }
 
-  def postSalesAtVatRateFromNi(countryIndex: Int, vatRateIndex: Int) = {
+  def postSalesAtVatRateFromNi(countryIndex: Int, vatRateIndex: Int) =
     http("Post Sales at Vat Rate From NI Country")
       .post(fullUrl + s"/2021-Q3/salesAtVatRateFromNi/$countryIndex/$vatRateIndex")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("netValueOfSales", "50000")
       .formParam("vatOnSales", "10000")
-      .check(status.in(200,303))
-  }
+      .check(status.in(200, 303))
 
-  def getCheckSalesFromNi(index: Int) = {
+  def getCheckSalesFromNi(index: Int) =
     http("Get Check Sales From NI page")
       .get(fullUrl + s"/2021-Q3/check-sales-from-ni/$index")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
-  }
 
-  def postCheckSalesFromNi(index: Int) = {
+  def postCheckSalesFromNi(index: Int) =
     http("Post Check Sales From NI Country")
       .post(fullUrl + s"/2021-Q3/check-sales-from-ni/$index")
       .formParam("csrfToken", "${csrfToken}")
-      .check(status.in(200,303))
-  }
+      .check(status.in(200, 303))
 
-  def getAddSalesFromNi = {
+  def getAddSalesFromNi =
     http("Get Add Sales From NI page")
       .get(fullUrl + "/2021-Q3/add-sales-from-ni")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
-  }
 
-  def postAddSalesFromNi(answer: Boolean) = {
+  def postAddSalesFromNi(answer: Boolean) =
     http("Post Add Sales From NI Country")
       .post(fullUrl + "/2021-Q3/add-sales-from-ni")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", answer)
-      .check(status.in(200,303))
-  }
+      .check(status.in(200, 303))
 
+  def getSoldGoodsFromEu =
+    http("Get Sold Goods From EU page")
+      .get(fullUrl + "/2021-Q3/soldGoodsFromEu")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postSoldGoodsFromEu =
+    http("Post Sold Goods From EU")
+      .post(fullUrl + "/2021-Q3/soldGoodsFromEu")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", true)
+      .check(status.in(200, 303))
+
+  def getCountryOfSaleFromEu(index: Int) =
+    http("Get Country Of Sale From EU page")
+      .get(fullUrl + s"/2021-Q3/countryOfSaleFromEu/$index")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postCountryOfSaleFromEu(index: Int, countryCode: String) =
+    http("Post Country Of Sale From EU")
+      .post(fullUrl + s"/2021-Q3/countryOfSaleFromEu/$index")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", countryCode)
+      .check(status.in(200, 303))
+
+  def getCountryOfConsumptionFromEu(countryFrom: Int, countryTo: Int) =
+    http("Get Country Of Consumption From EU page")
+      .get(fullUrl + s"/2021-Q3/countryOfConsumptionFromEu/$countryFrom/$countryTo")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postCountryOfConsumptionFromEu(countryFrom: Int, countryTo: Int, countryCode: String) =
+    http("Post Country Of Consumption From EU")
+      .post(fullUrl + s"/2021-Q3/countryOfConsumptionFromEu/$countryFrom/$countryTo")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", countryCode)
+      .check(status.in(200, 303))
+
+  def getVatRatesFromEu(countryFrom: Int, countryTo: Int) =
+    http("Get Vat Rates From EU page")
+      .get(fullUrl + s"/2021-Q3/vatRatesFromEu/$countryFrom/$countryTo")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postVatRatesFromEu(countryFrom: Int, countryTo: Int, vatRate: String) =
+    http("Post Vat Rates From EU")
+      .post(fullUrl + s"/2021-Q3/vatRatesFromEu/$countryFrom/$countryTo")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value[0]", vatRate)
+      .check(status.in(200, 303))
+
+  def getSalesAtVatRateFromEu(countryFrom: Int, countryTo: Int, vatRateIndex: Int) =
+    http("Get Sales at Vat Rate From EU page")
+      .get(fullUrl + s"/2021-Q3/salesAtVatRateFromEu/$countryFrom/$countryTo/$vatRateIndex")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postSalesAtVatRateFromEu(countryFrom: Int, countryTo: Int, vatRateIndex: Int) =
+    http("Post Sales at Vat Rate From EU")
+      .post(fullUrl + s"/2021-Q3/salesAtVatRateFromEu/$countryFrom/$countryTo/$vatRateIndex")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("netValueOfSales", "60000")
+      .formParam("vatOnSales", "15000")
+      .check(status.in(200, 303))
+
+  def getCheckSalesToEu(countryFrom: Int, countryTo: Int) =
+    http("Get Check Sales To EU page")
+      .get(fullUrl + s"/2021-Q3/check-sales-to-eu/$countryFrom/$countryTo")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postCheckSalesToEu(countryFrom: Int, countryTo: Int) =
+    http("Post Check Sales To EU")
+      .post(fullUrl + s"/2021-Q3/check-sales-to-eu/$countryFrom/$countryTo")
+      .formParam("csrfToken", "${csrfToken}")
+      .check(status.in(200, 303))
+
+  def getAddSalesToEu(index: Int) =
+    http("Get Add Sales To EU page")
+      .get(fullUrl + s"/2021-Q3/add-sales-to-eu/$index")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postAddSalesToEu(index: Int, answer: Boolean) =
+    http("Post Add Sales To EU")
+      .post(fullUrl + s"/2021-Q3/add-sales-to-eu/$index")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", answer)
+      .check(status.in(200, 303))
+
+  def getAddSalesFromEu =
+    http("Get Add Sales From EU page")
+      .get(fullUrl + s"/2021-Q3/add-sales-from-eu")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postAddSalesFromEu(answer: Boolean) =
+    http("Post Add Sales From EU")
+      .post(fullUrl + s"/2021-Q3/add-sales-from-eu")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", answer)
+      .check(status.in(200, 303))
 }
