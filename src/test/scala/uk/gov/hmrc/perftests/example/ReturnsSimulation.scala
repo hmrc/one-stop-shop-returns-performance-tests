@@ -24,6 +24,7 @@ class ReturnsSimulation extends PerformanceTestRunner {
   setup("returns", "Returns Journey") withRequests (
     goToAuthLoginPage,
     upFrontAuthLogin,
+    getHomePage,
     getStartReturn,
     postStartReturn,
     getSoldGoodsFromNi,
@@ -90,7 +91,10 @@ class ReturnsSimulation extends PerformanceTestRunner {
     postAddSalesFromEu(false),
     getCheckYourAnswers,
     postCheckYourAnswers,
-    getReturnSubmitted
+    getReturnSubmitted,
+    getHomePage,
+    getPastReturns,
+    getSubmittedReturn
   )
 
   runSimulation()
