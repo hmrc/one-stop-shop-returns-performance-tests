@@ -58,6 +58,12 @@ object ReturnsRequests extends ServicesConfiguration {
       .check(status.in(200, 303))
       .check(headerRegex("Set-Cookie", """mdtp=(.*)""").saveAs("mdtpCookie"))
 
+  def getHomePage =
+    http("Get Home Page")
+      .get(fullUrl)
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(status.in(200))
+
   def getStartReturn =
     http("Get Start Return page")
       .get(fullUrl + "/2021-Q3/startReturn")
@@ -284,6 +290,18 @@ object ReturnsRequests extends ServicesConfiguration {
   def getReturnSubmitted =
     http("Get Return Submitted page")
       .get(fullUrl + "/2021-Q3/successful")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(status.in(200))
+
+  def getPastReturns =
+    http("Get Past Returns page")
+      .get(fullUrl + "/past-returns")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(status.in(200))
+
+  def getSubmittedReturn =
+    http("Get Submitted Return page")
+      .get(fullUrl + "/return/2021-Q3")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(status.in(200))
 }
