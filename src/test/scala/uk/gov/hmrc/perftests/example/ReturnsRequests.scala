@@ -120,19 +120,32 @@ object ReturnsRequests extends ServicesConfiguration {
       .formParam("value[0]", vatRate)
       .check(status.in(200, 303))
 
-  def getSalesAtVatRateFromNi(countryIndex: Int, vatRateIndex: Int) =
-    http("Get Sales at Vat Rate From NI page")
-      .get(fullUrl + s"/2021-Q3/salesAtVatRateFromNi/$countryIndex/$vatRateIndex")
+  def getNetValueOfSalesFromNi(countryIndex: Int, vatRateIndex: Int) =
+    http("Get Net Value of Sales From NI page")
+      .get(fullUrl + s"/2021-Q3/netValueOfSalesFromNi/$countryIndex/$vatRateIndex")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postSalesAtVatRateFromNi(countryIndex: Int, vatRateIndex: Int) =
-    http("Post Sales at Vat Rate From NI Country")
-      .post(fullUrl + s"/2021-Q3/salesAtVatRateFromNi/$countryIndex/$vatRateIndex")
+  def postNetValueOfSalesFromNi(countryIndex: Int, vatRateIndex: Int) =
+    http("Post Net Value of Sales From NI Country")
+      .post(fullUrl + s"/2021-Q3/netValueOfSalesFromNi/$countryIndex/$vatRateIndex")
       .formParam("csrfToken", "${csrfToken}")
-      .formParam("netValueOfSales", "50000")
-      .formParam("vatOnSales", "10000")
+      .formParam("value", "50000")
+      .check(status.in(200, 303))
+
+  def getVatOnSalesFromNi(countryIndex: Int, vatRateIndex: Int) =
+    http("Get VAT on Sales From NI page")
+      .get(fullUrl + s"/2021-Q3/vatOnSalesFromNi/$countryIndex/$vatRateIndex")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postVatOnSalesFromNi(countryIndex: Int, vatRateIndex: Int) =
+    http("Post VAT on Sales From NI Country")
+      .post(fullUrl + s"/2021-Q3/vatOnSalesFromNi/$countryIndex/$vatRateIndex")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("choice", "standard")
       .check(status.in(200, 303))
 
   def getCheckSalesFromNi(index: Int) =
@@ -218,19 +231,32 @@ object ReturnsRequests extends ServicesConfiguration {
       .formParam("value[0]", vatRate)
       .check(status.in(200, 303))
 
-  def getSalesAtVatRateFromEu(countryFrom: Int, countryTo: Int, vatRateIndex: Int) =
-    http("Get Sales at Vat Rate From EU page")
-      .get(fullUrl + s"/2021-Q3/salesAtVatRateFromEu/$countryFrom/$countryTo/$vatRateIndex")
+  def getNetValueOfSalesFromEu(countryFromIndex: Int, countryToIndex: Int, vatRateIndex: Int) =
+    http("Get Net Value of Sales From EU page")
+      .get(fullUrl + s"/2021-Q3/netValueOfSalesFromEu/$countryFromIndex/$countryToIndex/$vatRateIndex")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postSalesAtVatRateFromEu(countryFrom: Int, countryTo: Int, vatRateIndex: Int) =
-    http("Post Sales at Vat Rate From EU")
-      .post(fullUrl + s"/2021-Q3/salesAtVatRateFromEu/$countryFrom/$countryTo/$vatRateIndex")
+  def postNetValueOfSalesFromEu(countryFromIndex: Int, countryToIndex: Int, vatRateIndex: Int) =
+    http("Post Net Value of Sales From EU Country")
+      .post(fullUrl + s"/2021-Q3/netValueOfSalesFromEu/$countryFromIndex/$countryToIndex/$vatRateIndex")
       .formParam("csrfToken", "${csrfToken}")
-      .formParam("netValueOfSales", "60000")
-      .formParam("vatOnSales", "15000")
+      .formParam("value", "50000")
+      .check(status.in(200, 303))
+
+  def getVatOnSalesFromEu(countryFromIndex: Int, countryToIndex: Int, vatRateIndex: Int) =
+    http("Get VAT on Sales From EU page")
+      .get(fullUrl + s"/2021-Q3/vatOnSalesFromEu/$countryFromIndex/$countryToIndex/$vatRateIndex")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postVatOnSalesFromEu(countryFromIndex: Int, countryToIndex: Int, vatRateIndex: Int) =
+    http("Post VAT on Sales From EU Country")
+      .post(fullUrl + s"/2021-Q3/vatOnSalesFromEu/$countryFromIndex/$countryToIndex/$vatRateIndex")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("choice", "standard")
       .check(status.in(200, 303))
 
   def getCheckSalesToEu(countryFrom: Int, countryTo: Int) =
