@@ -63,32 +63,32 @@ object ReturnsRequests extends ServicesConfiguration {
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(status.in(200))
 
-  def getStartReturn =
+  def getStartReturn(period: String) =
     http("Get Start Return page")
-      .get(fullUrl + "/2021-Q3/start")
+      .get(fullUrl + s"/$period/start")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postStartReturn =
+  def postStartReturn(period: String) =
     http("Post Start Returns")
-      .post(fullUrl + "/2021-Q3/start")
+      .post(fullUrl + s"/$period/start")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", true)
       .check(status.in(200, 303))
 
-  def getSoldGoodsFromNi =
+  def getSoldGoodsFromNi(period: String) =
     http("Get Sold Goods From Ni page")
-      .get(fullUrl + "/2021-Q3/sales-from-northern-ireland")
+      .get(fullUrl + s"/$period/sales-from-northern-ireland")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postSoldGoodsFromNi =
+  def postSoldGoodsFromNi(period: String, answer: Boolean) =
     http("Post Sold Goods From Ni Country")
-      .post(fullUrl + "/2021-Q3/sales-from-northern-ireland")
+      .post(fullUrl + s"/$period/sales-from-northern-ireland")
       .formParam("csrfToken", "${csrfToken}")
-      .formParam("value", true)
+      .formParam("value", answer)
       .check(status.in(200, 303))
 
   def getCountryOfConsumptionFromNi(index: Int) =
@@ -174,18 +174,18 @@ object ReturnsRequests extends ServicesConfiguration {
       .formParam("value", answer)
       .check(status.in(200, 303))
 
-  def getSoldGoodsFromEu =
+  def getSoldGoodsFromEu(period: String) =
     http("Get Sold Goods From EU page")
-      .get(fullUrl + "/2021-Q3/sales-from-eu")
+      .get(fullUrl + s"/$period/sales-from-eu")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postSoldGoodsFromEu =
+  def postSoldGoodsFromEu(period: String, answer: Boolean) =
     http("Post Sold Goods From EU")
-      .post(fullUrl + "/2021-Q3/sales-from-eu")
+      .post(fullUrl + s"/$period/sales-from-eu")
       .formParam("csrfToken", "${csrfToken}")
-      .formParam("value", true)
+      .formParam("value", answer)
       .check(status.in(200, 303))
 
   def getCountryOfSaleFromEu(index: Int) =
@@ -329,4 +329,102 @@ object ReturnsRequests extends ServicesConfiguration {
       .get(fullUrl + "/past-returns/2021-Q3")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(status.in(200))
+
+  def getCorrectPreviousReturn =
+    http("Get Correct Previous Return page")
+      .get(fullUrl + "/2021-Q4/correctPreviousReturn")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postCorrectPreviousReturn =
+    http("Post Correct Previous Return")
+      .post(fullUrl + "/2021-Q4/correctPreviousReturn")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", true)
+      .check(status.in(200, 303))
+
+  def getCorrectionReturnSinglePeriod =
+    http("Get Correction Return Single Period page")
+      .get(fullUrl + "/2021-Q4/correctionReturnSinglePeriod")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postCorrectionReturnSinglePeriod =
+    http("Post Correction Return Single Period")
+      .post(fullUrl + "/2021-Q4/correctionReturnSinglePeriod")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", true)
+      .check(status.in(200, 303))
+
+  def getCorrectionCountry =
+    http("Get Correction Country page")
+      .get(fullUrl + "/2021-Q4/correctionCountry/1/1")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postCorrectionCountry(countryCode: String) =
+    http("Post Correction Country")
+      .post(fullUrl + "/2021-Q4/correctionCountry/1/1")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", countryCode)
+      .check(status.in(200, 303))
+
+  def getUndeclaredCountryCorrection =
+    http("Get Undeclared Country Correction page")
+      .get(fullUrl + "/2021-Q4/undeclaredCountryCorrection/1/1")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postUndeclaredCountryCorrection =
+    http("Post Undeclared Country Correction")
+      .post(fullUrl + "/2021-Q4/undeclaredCountryCorrection/1/1")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", true)
+      .check(status.in(200, 303))
+
+  def getCountryVatCorrection =
+    http("Get Country VAT Correction page")
+      .get(fullUrl + "/2021-Q4/countryVatCorrection/1/1")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postCountryVatCorrection(vatAmount: String) =
+    http("Post Country VAT Correction")
+      .post(fullUrl + "/2021-Q4/countryVatCorrection/1/1")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", vatAmount)
+      .check(status.in(200, 303))
+
+  def getVatCorrectionsList =
+    http("Get VAT Corrections List page")
+      .get(fullUrl + "/2021-Q4/vatCorrectionsList/1")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postVatCorrectionsList =
+    http("Post VAT Corrections List")
+      .post(fullUrl + "/2021-Q4/vatCorrectionsList/1")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", false)
+      .check(status.in(200, 303))
+
+  def getVatPeriodCorrectionsList =
+    http("Get VAT Period Corrections List page")
+      .get(fullUrl + "/2021-Q4/vatPeriodCorrectionsList")
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def postVatPeriodCorrectionsList =
+    http("Post VAT Period Corrections List")
+      .post(fullUrl + "/2021-Q4/vatPeriodCorrectionsList")
+      .formParam("csrfToken", "${csrfToken}")
+      .formParam("value", false)
+      .check(status.in(200, 303))
 }
