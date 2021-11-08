@@ -41,23 +41,22 @@ object ReturnsRequests extends ServicesConfiguration {
   private val mongoClient: MongoClient = MongoClient()
   private val timeout: FiniteDuration  = 10.seconds
 
-  sys.addShutdownHook {
-    mongoClient.close()
-  }
-
-  def clearDown() =
-    for (vrn <- 111000001 to 111010000)
+  def clearDown() = {
+    for (vrn <- 111000001 to 111010000) {
       try Await.result(
         mongoClient
           .getDatabase("one-stop-shop-returns")
           .getCollection("returns")
-          .deleteMany(filter = Filters.equal("vrn", vrn.toString))
+          .findOneAndDelete(filter = Filters.equal("vrn", vrn.toString))
           .head(),
         timeout
       )
       catch {
         case e: Exception => println("Error: " + e)
       }
+    }
+    mongoClient.close()
+  }
 
   def goToAuthLoginPage =
     http("Go to Auth login page")
