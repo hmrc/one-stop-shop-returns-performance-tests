@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.perftests.example
+package uk.gov.hmrc.perftests.returns
 
 import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
-import uk.gov.hmrc.perftests.example.ReturnsRequests._
+import uk.gov.hmrc.perftests.returns.ReturnsRequests._
 
 class ReturnsSimulation extends PerformanceTestRunner {
+
+  clearDown()
 
   setup("returns", "Returns Journey") withRequests (
     goToAuthLoginPage,
