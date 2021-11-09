@@ -20,11 +20,6 @@ import io.gatling.core.Predef._
 import io.gatling.core.session.Expression
 import io.gatling.http.Predef._
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
-import org.mongodb.scala.MongoClient
-import org.mongodb.scala.model.Filters
-
-import scala.concurrent.Await
-import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
 object ReturnsRequests extends ServicesConfiguration {
 
@@ -37,26 +32,6 @@ object ReturnsRequests extends ServicesConfiguration {
   val loginUrl = baseUrlFor("auth-login-stub")
 
   def inputSelectorByName(name: String): Expression[String] = s"input[name='$name']"
-
-  private val mongoClient: MongoClient = MongoClient()
-  private val timeout: FiniteDuration  = 10.seconds
-
-  def clearDown() = {
-    for (vrn <- 111000001 to 111010000) {
-      try Await.result(
-        mongoClient
-          .getDatabase("one-stop-shop-returns")
-          .getCollection("returns")
-          .findOneAndDelete(filter = Filters.equal("vrn", vrn.toString))
-          .head(),
-        timeout
-      )
-      catch {
-        case e: Exception => println("Error: " + e)
-      }
-    }
-    mongoClient.close()
-  }
 
   def goToAuthLoginPage =
     http("Go to Auth login page")

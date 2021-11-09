@@ -21,8 +21,6 @@ import uk.gov.hmrc.perftests.returns.ReturnsRequests._
 
 class ReturnsSimulation extends PerformanceTestRunner {
 
-  clearDown()
-
   setup("returns", "Returns Journey") withRequests (
     goToAuthLoginPage,
     upFrontAuthLogin,
