@@ -3,7 +3,10 @@
 # one-stop-shop-returns-performance-tests
 Performance test suite for the `one-stop-shop-returns-frontend`, using [performance-test-runner](https://github.com/hmrc/performance-test-runner) under the hood.
 
-## Amend one-stop-shop-returns-frontend application.conf
+## Running Locally - Amend one-stop-shop-returns-frontend application.conf
+
+Remove any returns for performance test VRNs in MongoDB.
+
 Amend the section for one-stop-shop-registration in application.conf to:
 ```
 one-stop-shop-registration {
@@ -15,6 +18,14 @@ one-stop-shop-registration {
 ```
 This will use the registrations stub to check registrations exist for the users in the returns service,
 instead of having to populate the database prior to the performance test.
+
+## Running on Staging - Run Mongo Query to clear the database of performance test users
+Run the following mongo-query to delete previous returns for the performance test users:
+```
+use one-stop-shop-returns
+db.returns.deleteMany({vrn:{$regex: /^1110/ }})
+db.returns.find({vrn:{$regex: /^1110/ }}).pretty()
+```
 
 
 ## Running the tests
