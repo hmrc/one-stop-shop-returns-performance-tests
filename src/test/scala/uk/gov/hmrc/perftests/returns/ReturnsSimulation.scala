@@ -99,9 +99,9 @@ class ReturnsSimulation extends PerformanceTestRunner {
     postAddSalesToEu(2, false),
     getAddSalesFromEu,
     postAddSalesFromEu(false),
-    getCheckYourAnswers,
-    postCheckYourAnswers,
-    getReturnSubmitted,
+    getCheckYourAnswers("2021-Q3"),
+    postCheckYourAnswers("2021-Q3"),
+    getReturnSubmitted("2021-Q3"),
     getHomePage,
     getPastReturns,
     getSubmittedReturn,
@@ -122,10 +122,16 @@ class ReturnsSimulation extends PerformanceTestRunner {
     postUndeclaredCountryCorrection,
     getCountryVatCorrection,
     postCountryVatCorrection("5000"),
+    getVatPayableConfirm,
+    postVatPayableConfirm,
+    getVatPayableCheck,
     getVatCorrectionsList,
     postVatCorrectionsList,
-    getVatPeriodCorrectionsList,
-    postVatPeriodCorrectionsList
+    getVatCorrectionPeriods,
+    postVatCorrectionPeriods,
+    getCheckYourAnswers("2021-Q4"),
+    postCheckYourAnswers("2021-Q4"),
+    getReturnSubmitted("2021-Q4")
   )
 
   runSimulation()
