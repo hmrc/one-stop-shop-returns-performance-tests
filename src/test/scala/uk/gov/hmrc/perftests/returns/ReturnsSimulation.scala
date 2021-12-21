@@ -27,7 +27,7 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
 class ReturnsSimulation extends PerformanceTestRunner {
 
   private val mongoClient: MongoClient = MongoClient()
-  private val timeout: FiniteDuration  = 10.seconds
+  private val timeout: FiniteDuration  = 60.seconds
 
   private val vrnPattern = "^1110".r
 
