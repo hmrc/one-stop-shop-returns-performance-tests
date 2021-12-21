@@ -16,10 +16,40 @@
 
 package uk.gov.hmrc.perftests.returns
 
+import org.mongodb.scala.MongoClient
+import org.mongodb.scala.model.Filters
 import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
 import uk.gov.hmrc.perftests.returns.ReturnsRequests._
 
+import scala.concurrent.Await
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
+
 class ReturnsSimulation extends PerformanceTestRunner {
+
+  private val mongoClient: MongoClient = MongoClient()
+  private val timeout: FiniteDuration  = 10.seconds
+
+  private val vrnPattern = "^1110".r
+
+  before {
+
+    clearDatabase("returns")
+    clearDatabase("corrections")
+
+    def clearDatabase(collection: String) =
+      try Await.result(
+        mongoClient
+          .getDatabase("one-stop-shop-returns")
+          .getCollection(collection)
+          .deleteMany(filter = Filters.regex("vrn", vrnPattern))
+          .head(),
+        timeout
+      )
+      catch {
+        case e: Exception => println("Error: " + e)
+      }
+
+  }
 
   setup("returns", "Returns Journey") withRequests (
     goToAuthLoginPage,
