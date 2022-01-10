@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import uk.gov.hmrc.performance.conf.ServicesConfiguration
 object ReturnsRequests extends ServicesConfiguration {
 
   val baseUrl: String     = baseUrlFor("one-stop-shop-returns-frontend")
-  val stubUrl: String     = baseUrlFor("one-stop-shop-registration-stub")
   val route: String       = "/pay-vat-on-goods-sold-to-eu/northern-ireland-returns-payments"
   val homepageUrl: String = baseUrl + "/pay-vat-on-goods-sold-to-eu/northern-ireland-returns-payments/your-account"
   val fullUrl: String     = baseUrl + route
