@@ -32,8 +32,10 @@ Run the following mongo-query to delete previous returns for the performance tes
 use one-stop-shop-returns
 db.returns.deleteMany({vrn:{$regex: /^1110/ }})
 db.corrections.deleteMany({vrn:{$regex: /^1110/ }})
+db.saved-user-answers.deleteMany({vrn:{$regex: /^1110/ }})
 db.returns.find({vrn:{$regex: /^1110/ }}).pretty()
 db.corrections.find({vrn:{$regex: /^1110/ }}).pretty()
+db.saved-user-answers.find({vrn:{$regex: /^1110/ }}).pretty()
 ```
 
 
