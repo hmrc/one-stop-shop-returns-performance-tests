@@ -10,9 +10,9 @@ You then should be running 4.0 with a replica set. You may have to re-run the rs
 
 sm --start ONE_STOP_SHOP_ALL -r
 
-## Running Locally - Amend one-stop-shop-returns-frontend application.conf
+## Running Locally
 
-Remove any returns for performance test VRNs in MongoDB.
+### Amend one-stop-shop-returns-frontend application.conf and run from terminal
 
 Amend the section for one-stop-shop-registration in application.conf to:
 ```
@@ -26,20 +26,25 @@ one-stop-shop-registration {
 This will use the registrations stub to check registrations exist for the users in the returns service,
 instead of having to populate the database prior to the performance test.
 
-## Running on Staging - Run Mongo Query to clear the database of performance test users
-Run the following mongo-query to delete previous returns for the performance test users:
+Use "sm --stop ONE_STOP_SHOP_RETURNS_FRONTEND" and then run the service using "sbt run" in the terminal
+
+### Run testOnly version of one-stop-shop-returns from terminal
+
+In order to clear down the performance test accounts prior to each run. We need to use the test-only endpoint
+in one-stop-shop-returns. 
+
+Use "sm --stop ONE_STOP_SHOP_RETURNS" to stop the service in service manager then in the terminal run:
 ```
-use one-stop-shop-returns
-db.returns.deleteMany({vrn:{$regex: /^1110/ }})
-db.corrections.deleteMany({vrn:{$regex: /^1110/ }})
-db.returns.find({vrn:{$regex: /^1110/ }}).pretty()
-db.corrections.find({vrn:{$regex: /^1110/ }}).pretty()
+sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes
 ```
+## Running on Staging - app-config-staging
+app-config-staging has been set up to use the testOnly routes so that service manager will run the equivalent of
+"sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes" on staging.
 
 
 ## Running the tests
 
-#### Smoke test
+### Smoke test
 
 It might be useful to try the journey with one user to check that everything works fine before running the full performance test
 ```
