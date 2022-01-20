@@ -24,7 +24,6 @@ import uk.gov.hmrc.performance.conf.ServicesConfiguration
 object ReturnsRequests extends ServicesConfiguration {
 
   val baseUrl: String     = baseUrlFor("one-stop-shop-returns-frontend")
-  val backendUrl: String     = baseUrlFor("one-stop-shop-returns")
   val route: String       = "/pay-vat-on-goods-sold-to-eu/northern-ireland-returns-payments"
   val homepageUrl: String = baseUrl + "/pay-vat-on-goods-sold-to-eu/northern-ireland-returns-payments/your-account"
   val fullUrl: String     = baseUrl + route
@@ -35,7 +34,7 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def deleteAccounts =
     http("Clear perf test accounts from mongo")
-      .delete(s"$backendUrl/test-only/delete-accounts")
+      .get(s"$baseUrl/test-only/delete-accounts")
       .check(status.is(200))
 
   def goToAuthLoginPage =
