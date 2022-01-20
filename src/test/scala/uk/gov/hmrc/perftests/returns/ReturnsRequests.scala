@@ -34,7 +34,7 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def deleteAccounts =
     http("Clear perf test accounts from mongo")
-      .get(s"$baseUrl/test-only/delete-accounts")
+      .get(s"$fullUrl/test-only/delete-accounts")
       .check(status.is(200))
 
   def goToAuthLoginPage =
