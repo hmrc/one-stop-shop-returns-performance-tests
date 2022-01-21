@@ -18,11 +18,18 @@ package uk.gov.hmrc.perftests.returns
 
 import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
 import uk.gov.hmrc.perftests.returns.ReturnsRequests._
+import utility.Client.clearAll
 
 class ReturnsSimulation extends PerformanceTestRunner {
 
+  val baseUrl: String = baseUrlFor("one-stop-shop-returns-frontend")
+
+  before {
+    println("Clearing the performance tests accounts from the database")
+    clearAll(s"$baseUrl/pay-vat-on-goods-sold-to-eu/northern-ireland-returns-payments/test-only/delete-accounts")
+  }
+
   setup("returns", "Returns Journey") withRequests (
-    deleteAccounts,
     goToAuthLoginPage,
     upFrontAuthLogin,
     getHomePage,
