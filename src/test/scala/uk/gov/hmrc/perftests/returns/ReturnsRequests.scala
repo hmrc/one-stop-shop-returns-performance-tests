@@ -32,11 +32,6 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def inputSelectorByName(name: String): Expression[String] = s"input[name='$name']"
 
-  def deleteAccounts =
-    http("Clear perf test accounts from mongo")
-      .get(s"$fullUrl/test-only/delete-accounts")
-      .check(status.is(200))
-
   def goToAuthLoginPage =
     http("Go to Auth login page")
       .get(loginUrl + s"/auth-login-stub/gg-sign-in")
