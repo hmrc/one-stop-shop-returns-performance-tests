@@ -26,7 +26,10 @@ one-stop-shop-registration {
 This will use the registrations stub to check registrations exist for the users in the returns service,
 instead of having to populate the database prior to the performance test.
 
-Use "sm --stop ONE_STOP_SHOP_RETURNS_FRONTEND" and then run the service using "sbt run" in the terminal
+Use "sm --stop ONE_STOP_SHOP_RETURNS_FRONTEND" and then run the service using:
+```
+"sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes" in the terminal
+```
 
 ### Run testOnly version of one-stop-shop-returns from terminal
 
