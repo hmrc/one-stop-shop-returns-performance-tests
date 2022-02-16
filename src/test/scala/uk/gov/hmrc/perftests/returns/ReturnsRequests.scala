@@ -154,7 +154,7 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def postCheckSalesFromNi(index: Int) =
     http("Post Check Sales From NI Country")
-      .post(fullUrl + s"/2021-Q3/check-sales-from-northern-ireland/$index")
+      .post(fullUrl + s"/2021-Q3/check-sales-from-northern-ireland/$index?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.in(200, 303))
 
@@ -167,7 +167,7 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def postAddSalesFromNi(answer: Boolean) =
     http("Post Add Sales From NI Country")
-      .post(fullUrl + "/2021-Q3/add-sales-from-northern-ireland")
+      .post(fullUrl + "/2021-Q3/add-sales-from-northern-ireland?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", answer)
       .check(status.in(200, 303))
@@ -265,7 +265,7 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def postCheckSalesToEu(countryFrom: Int, countryTo: Int) =
     http("Post Check Sales To EU")
-      .post(fullUrl + s"/2021-Q3/check-sales-from-eu/$countryFrom/$countryTo")
+      .post(fullUrl + s"/2021-Q3/check-sales-from-eu/$countryFrom/$countryTo?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.in(200, 303))
 
@@ -278,7 +278,7 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def postAddSalesToEu(index: Int, answer: Boolean) =
     http("Post Add Sales To EU")
-      .post(fullUrl + s"/2021-Q3/add-sales-from-eu-to-eu/$index")
+      .post(fullUrl + s"/2021-Q3/add-sales-from-eu-to-eu/$index?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", answer)
       .check(status.in(200, 303))
@@ -292,7 +292,7 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def postAddSalesFromEu(answer: Boolean) =
     http("Post Add Sales From EU")
-      .post(fullUrl + "/2021-Q3/add-sales-from-eu")
+      .post(fullUrl + "/2021-Q3/add-sales-from-eu?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", answer)
       .check(status.in(200, 303))
@@ -306,7 +306,7 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def postCheckYourAnswers(period: String) =
     http("Post Check Your Answers page")
-      .post(fullUrl + s"/$period/check-your-answers")
+      .post(fullUrl + s"/$period/check-your-answers?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.in(200, 303))
 
@@ -386,14 +386,14 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def getCountryVatCorrection =
     http("Get Country VAT Correction page")
-      .get(fullUrl + "/2021-Q4/country-vat-correction-amount/1/1")
+      .get(fullUrl + "/2021-Q4/country-vat-correction-amount/1/1?undeclaredCountry=true")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postCountryVatCorrection(vatAmount: String) =
     http("Post Country VAT Correction")
-      .post(fullUrl + "/2021-Q4/country-vat-correction-amount/1/1")
+      .post(fullUrl + "/2021-Q4/country-vat-correction-amount/1/1?undeclaredCountry=true")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", vatAmount)
       .check(status.in(200, 303))
@@ -427,7 +427,7 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def postVatCorrectionsList =
     http("Post VAT Corrections List")
-      .post(fullUrl + "/2021-Q4/vat-correction-list/1")
+      .post(fullUrl + "/2021-Q4/vat-correction-list/1?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", false)
       .check(status.in(200, 303))
@@ -441,7 +441,7 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def postVatCorrectionPeriods =
     http("Post VAT Period Corrections List")
-      .post(fullUrl + "/2021-Q4/vat-correction-periods")
+      .post(fullUrl + "/2021-Q4/vat-correction-periods?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.in(200, 303))
 }
