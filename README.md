@@ -31,7 +31,23 @@ Use "sm --stop ONE_STOP_SHOP_RETURNS_FRONTEND" and then run the service using:
 "sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes" in the terminal
 ```
 
-### Run testOnly version of one-stop-shop-returns from terminal
+### Amend and run testOnly version of one-stop-shop-returns from terminal
+
+#### Amend config
+
+As with Returns backend we also need to use the registration stub as it pulls registration info when submitting to core
+
+Amend the section for one-stop-shop-registration in application.conf to:
+```
+one-stop-shop-registration {
+    protocol = http
+    host     = localhost
+    port     = 10203
+    basePath = "one-stop-shop-registration-stub"
+}
+```
+
+#### Run and use test-only routes
 
 In order to clear down the performance test accounts prior to each run. We need to use the test-only endpoint
 in one-stop-shop-returns. 
