@@ -22,11 +22,14 @@ import utility.Client.clearAll
 
 class ReturnsSimulation extends PerformanceTestRunner {
 
-  val baseUrl: String = baseUrlFor("one-stop-shop-returns-frontend")
+  val returnsBaseUrl: String = baseUrlFor("one-stop-shop-returns-frontend")
+  val registrationBaseUrl: String = baseUrlFor("one-stop-shop-registration-frontend")
 
   before {
+    println("Clearing the performance tests registrations from the database")
+    clearAll(s"$registrationBaseUrl/pay-vat-on-goods-sold-to-eu/northern-ireland-register/test-only/delete-accounts")
     println("Clearing the performance tests accounts from the database")
-    clearAll(s"$baseUrl/pay-vat-on-goods-sold-to-eu/northern-ireland-returns-payments/test-only/delete-accounts")
+    clearAll(s"$returnsBaseUrl/pay-vat-on-goods-sold-to-eu/northern-ireland-returns-payments/test-only/delete-accounts")
   }
 
   setup("returns", "Returns Journey") withRequests (
