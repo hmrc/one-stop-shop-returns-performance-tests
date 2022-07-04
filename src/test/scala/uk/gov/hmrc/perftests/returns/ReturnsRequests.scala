@@ -52,6 +52,10 @@ object ReturnsRequests extends ServicesConfiguration {
       .formParam("enrolment[0].taxIdentifier[0].name", "VRN")
       .formParam("enrolment[0].taxIdentifier[0].value", "${vrn}")
       .formParam("enrolment[0].state", "Activated")
+      .formParam("enrolment[1].name", "HMRC-OSS-ORG")
+      .formParam("enrolment[1].taxIdentifier[0].name", "VRN")
+      .formParam("enrolment[1].taxIdentifier[0].value", "${vrn}")
+      .formParam("enrolment[1].state", "Activated")
       .check(status.in(200, 303))
       .check(headerRegex("Set-Cookie", """mdtp=(.*)""").saveAs("mdtpCookie"))
 
