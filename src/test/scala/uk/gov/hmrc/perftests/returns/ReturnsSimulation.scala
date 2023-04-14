@@ -22,7 +22,7 @@ import utility.Client.clearAll
 
 class ReturnsSimulation extends PerformanceTestRunner {
 
-  val returnsBaseUrl: String = baseUrlFor("one-stop-shop-returns-frontend")
+  val returnsBaseUrl: String      = baseUrlFor("one-stop-shop-returns-frontend")
   val registrationBaseUrl: String = baseUrlFor("one-stop-shop-registration-frontend")
 
   before {
