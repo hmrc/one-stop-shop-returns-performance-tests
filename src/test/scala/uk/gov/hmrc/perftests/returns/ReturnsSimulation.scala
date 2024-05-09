@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,6 @@ class ReturnsSimulation extends PerformanceTestRunner {
   val registrationBaseUrl: String = baseUrlFor("one-stop-shop-registration-frontend")
 
   before {
-    println("Clearing the performance tests registrations from the database")
-    clearAll(s"$registrationBaseUrl/pay-vat-on-goods-sold-to-eu/northern-ireland-register/test-only/delete-accounts")
     println("Clearing the performance tests accounts from the database")
     clearAll(s"$returnsBaseUrl/pay-vat-on-goods-sold-to-eu/northern-ireland-returns-payments/test-only/delete-accounts")
   }
