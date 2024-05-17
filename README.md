@@ -10,57 +10,6 @@ You then should be running 4.0 with a replica set. You may have to re-run the rs
 
 sm --start ONE_STOP_SHOP_ALL -r
 
-## Running Locally
-
-### Amend one-stop-shop-returns-frontend application.conf and run from terminal
-
-Amend the section for one-stop-shop-registration in application.conf to:
-```
-one-stop-shop-registration {
-    protocol = http
-    host     = localhost
-    port     = 10203
-    basePath = "one-stop-shop-registration-stub"
-}
-```
-This will use the registrations stub to check registrations exist for the users in the returns service,
-instead of having to populate the database prior to the performance test.
-
-Use "sm --stop ONE_STOP_SHOP_RETURNS_FRONTEND" and then run the service using:
-```
-"sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes" in the terminal
-```
-
-### Amend and run testOnly version of one-stop-shop-returns from terminal
-
-#### Amend config
-
-As with Returns backend we also need to use the registration stub as it pulls registration info when submitting to core
-
-Amend the section for one-stop-shop-registration in application.conf to:
-```
-one-stop-shop-registration {
-    protocol = http
-    host     = localhost
-    port     = 10203
-    basePath = "one-stop-shop-registration-stub"
-}
-```
-
-#### Run and use test-only routes
-
-In order to clear down the performance test accounts prior to each run. We need to use the test-only endpoint
-in one-stop-shop-returns. 
-
-Use "sm --stop ONE_STOP_SHOP_RETURNS" to stop the service in service manager then in the terminal run:
-```
-sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes
-```
-## Running on Staging - app-config-staging
-app-config-staging has been set up to use the testOnly routes so that service manager will run the equivalent of
-"sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes" on staging.
-
-
 ## Running the tests
 
 ### Smoke test
