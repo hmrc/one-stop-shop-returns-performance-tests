@@ -37,7 +37,7 @@ object ReturnsRequests extends ServicesConfiguration {
       .get(loginUrl + s"/auth-login-stub/gg-sign-in")
       .check(status.in(200, 303))
 
-  def upFrontAuthLogin =
+  def upFrontAuthLoginFirstReturn =
     http("Enter Auth login credentials ")
       .post(loginUrl + s"/auth-login-stub/gg-sign-in")
       .formParam("authorityId", "")
@@ -50,11 +50,11 @@ object ReturnsRequests extends ServicesConfiguration {
       .formParam("redirectionUrl", homepageUrl)
       .formParam("enrolment[0].name", "HMRC-MTD-VAT")
       .formParam("enrolment[0].taxIdentifier[0].name", "VRN")
-      .formParam("enrolment[0].taxIdentifier[0].value", "${vrn}")
+      .formParam("enrolment[0].taxIdentifier[0].value", "${firstReturnVrn}")
       .formParam("enrolment[0].state", "Activated")
       .formParam("enrolment[1].name", "HMRC-OSS-ORG")
       .formParam("enrolment[1].taxIdentifier[0].name", "VRN")
-      .formParam("enrolment[1].taxIdentifier[0].value", "${vrn}")
+      .formParam("enrolment[1].taxIdentifier[0].value", "${firstReturnVrn}")
       .formParam("enrolment[1].state", "Activated")
       .check(status.in(200, 303))
       .check(headerRegex("Set-Cookie", """mdtp=(.*)""").saveAs("mdtpCookie"))

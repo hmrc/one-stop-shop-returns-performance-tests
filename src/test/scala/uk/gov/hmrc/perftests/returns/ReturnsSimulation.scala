@@ -29,9 +29,9 @@ class ReturnsSimulation extends PerformanceTestRunner {
     clearAll(s"$returnsBaseUrl/pay-vat-on-goods-sold-to-eu/northern-ireland-returns-payments/test-only/delete-accounts")
   }
 
-  setup("returns", "Returns Journey") withRequests (
+  setup("returns", "Initial Returns Journey") withRequests (
     goToAuthLoginPage,
-    upFrontAuthLogin,
+    upFrontAuthLoginFirstReturn,
     getHomePage,
     getStartReturn("2021-Q3"),
     postStartReturn("2021-Q3"),
@@ -141,6 +141,9 @@ class ReturnsSimulation extends PerformanceTestRunner {
     postCheckYourAnswers("2021-Q4"),
     getReturnSubmitted("2021-Q4")
   )
+
+  setup("returnsWithCorrections", "Returns with Corrections Journey") withRequests
+    goToAuthLoginPage
 
   runSimulation()
 }
