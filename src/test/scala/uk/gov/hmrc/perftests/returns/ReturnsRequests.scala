@@ -193,7 +193,7 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def postAddSalesFromNi(period: String, answer: Boolean) =
     http("Post Add Sales From NI Country")
-      .post(fullUrl + "/$period/add-sales-from-northern-ireland?incompletePromptShown=false")
+      .post(fullUrl + s"/$period/add-sales-from-northern-ireland?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", answer)
       .check(status.in(200, 303))
@@ -311,7 +311,7 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def getAddSalesFromEu(period: String) =
     http("Get Add Sales From EU page")
-      .get(fullUrl + "/$period/add-sales-from-eu")
+      .get(fullUrl + s"/$period/add-sales-from-eu")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
