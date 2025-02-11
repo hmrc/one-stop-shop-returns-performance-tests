@@ -37,7 +37,7 @@ object ReturnsRequests extends ServicesConfiguration {
       .get(loginUrl + s"/auth-login-stub/gg-sign-in")
       .check(status.in(200, 303))
 
-  def upFrontAuthLogin =
+  def upFrontAuthLoginStrategicOff =
     http("Enter Auth login credentials ")
       .post(loginUrl + s"/auth-login-stub/gg-sign-in")
       .formParam("authorityId", "")
@@ -50,11 +50,33 @@ object ReturnsRequests extends ServicesConfiguration {
       .formParam("redirectionUrl", homepageUrl)
       .formParam("enrolment[0].name", "HMRC-MTD-VAT")
       .formParam("enrolment[0].taxIdentifier[0].name", "VRN")
-      .formParam("enrolment[0].taxIdentifier[0].value", "${vrn}")
+      .formParam("enrolment[0].taxIdentifier[0].value", "${multipleReturnsVrn}")
       .formParam("enrolment[0].state", "Activated")
       .formParam("enrolment[1].name", "HMRC-OSS-ORG")
       .formParam("enrolment[1].taxIdentifier[0].name", "VRN")
-      .formParam("enrolment[1].taxIdentifier[0].value", "${vrn}")
+      .formParam("enrolment[1].taxIdentifier[0].value", "${multipleReturnsVrn}")
+      .formParam("enrolment[1].state", "Activated")
+      .check(status.in(200, 303))
+      .check(headerRegex("Set-Cookie", """mdtp=(.*)""").saveAs("mdtpCookie"))
+
+  def upFrontAuthLoginStrategicOn =
+    http("Enter Auth login credentials ")
+      .post(loginUrl + s"/auth-login-stub/gg-sign-in")
+      .formParam("authorityId", "")
+      .formParam("gatewayToken", "")
+      .formParam("credentialStrength", "strong")
+      .formParam("confidenceLevel", "50")
+      .formParam("affinityGroup", "Organisation")
+      .formParam("email", "user@test.com")
+      .formParam("credentialRole", "User")
+      .formParam("redirectionUrl", homepageUrl)
+      .formParam("enrolment[0].name", "HMRC-MTD-VAT")
+      .formParam("enrolment[0].taxIdentifier[0].name", "VRN")
+      .formParam("enrolment[0].taxIdentifier[0].value", "${singleReturnVrn}")
+      .formParam("enrolment[0].state", "Activated")
+      .formParam("enrolment[1].name", "HMRC-OSS-ORG")
+      .formParam("enrolment[1].taxIdentifier[0].name", "VRN")
+      .formParam("enrolment[1].taxIdentifier[0].value", "${singleReturnVrn}")
       .formParam("enrolment[1].state", "Activated")
       .check(status.in(200, 303))
       .check(headerRegex("Set-Cookie", """mdtp=(.*)""").saveAs("mdtpCookie"))
@@ -93,85 +115,85 @@ object ReturnsRequests extends ServicesConfiguration {
       .formParam("value", answer)
       .check(status.in(200, 303))
 
-  def getCountryOfConsumptionFromNi(index: Int) =
+  def getCountryOfConsumptionFromNi(period: String, index: Int) =
     http("Get Country Of Consumption From NI page")
-      .get(fullUrl + s"/2021-Q3/eu-country-from-northern-ireland/$index")
+      .get(fullUrl + s"/$period/eu-country-from-northern-ireland/$index")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postCountryOfConsumptionFromNi(index: Int, countryCode: String) =
+  def postCountryOfConsumptionFromNi(period: String, index: Int, countryCode: String) =
     http("Post Country Of Consumption From NI Country")
-      .post(fullUrl + s"/2021-Q3/eu-country-from-northern-ireland/$index")
+      .post(fullUrl + s"/$period/eu-country-from-northern-ireland/$index")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", countryCode)
       .check(status.in(200, 303))
 
-  def getVatRatesFromNi(index: Int) =
+  def getVatRatesFromNi(period: String, index: Int) =
     http("Get Vat Rates From NI page")
-      .get(fullUrl + s"/2021-Q3/eu-vat-rates-from-northern-ireland/$index")
+      .get(fullUrl + s"/$period/eu-vat-rates-from-northern-ireland/$index")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postVatRatesFromNi(index: Int, vatRate: String) =
+  def postVatRatesFromNi(period: String, index: Int, vatRate: String) =
     http("Post Vat Rates From NI Country")
-      .post(fullUrl + s"/2021-Q3/eu-vat-rates-from-northern-ireland/$index")
+      .post(fullUrl + s"/$period/eu-vat-rates-from-northern-ireland/$index")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value[0]", vatRate)
       .check(status.in(200, 303))
 
-  def getNetValueOfSalesFromNi(countryIndex: Int, vatRateIndex: Int) =
+  def getNetValueOfSalesFromNi(period: String, countryIndex: Int, vatRateIndex: Int) =
     http("Get Net Value of Sales From NI page")
-      .get(fullUrl + s"/2021-Q3/eu-sales-from-northern-ireland/$countryIndex/$vatRateIndex")
+      .get(fullUrl + s"/$period/eu-sales-from-northern-ireland/$countryIndex/$vatRateIndex")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postNetValueOfSalesFromNi(countryIndex: Int, vatRateIndex: Int) =
+  def postNetValueOfSalesFromNi(period: String, countryIndex: Int, vatRateIndex: Int) =
     http("Post Net Value of Sales From NI Country")
-      .post(fullUrl + s"/2021-Q3/eu-sales-from-northern-ireland/$countryIndex/$vatRateIndex")
+      .post(fullUrl + s"/$period/eu-sales-from-northern-ireland/$countryIndex/$vatRateIndex")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", "50000")
       .check(status.in(200, 303))
 
-  def getVatOnSalesFromNi(countryIndex: Int, vatRateIndex: Int) =
+  def getVatOnSalesFromNi(period: String, countryIndex: Int, vatRateIndex: Int) =
     http("Get VAT on Sales From NI page")
-      .get(fullUrl + s"/2021-Q3/vat-on-sales-from-northern-ireland/$countryIndex/$vatRateIndex")
+      .get(fullUrl + s"/$period/vat-on-sales-from-northern-ireland/$countryIndex/$vatRateIndex")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postVatOnSalesFromNi(countryIndex: Int, vatRateIndex: Int) =
+  def postVatOnSalesFromNi(period: String, countryIndex: Int, vatRateIndex: Int) =
     http("Post VAT on Sales From NI Country")
-      .post(fullUrl + s"/2021-Q3/vat-on-sales-from-northern-ireland/$countryIndex/$vatRateIndex")
+      .post(fullUrl + s"/$period/vat-on-sales-from-northern-ireland/$countryIndex/$vatRateIndex")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("choice", "standard")
       .check(status.in(200, 303))
 
-  def getCheckSalesFromNi(index: Int) =
+  def getCheckSalesFromNi(period: String, index: Int) =
     http("Get Check Sales From NI page")
-      .get(fullUrl + s"/2021-Q3/check-sales-from-northern-ireland/$index")
+      .get(fullUrl + s"/$period/check-sales-from-northern-ireland/$index")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postCheckSalesFromNi(index: Int) =
+  def postCheckSalesFromNi(period: String, index: Int) =
     http("Post Check Sales From NI Country")
-      .post(fullUrl + s"/2021-Q3/check-sales-from-northern-ireland/$index?incompletePromptShown=false")
+      .post(fullUrl + s"/$period/check-sales-from-northern-ireland/$index?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.in(200, 303))
 
-  def getAddSalesFromNi =
+  def getAddSalesFromNi(period: String) =
     http("Get Add Sales From NI page")
-      .get(fullUrl + "/2021-Q3/add-sales-from-northern-ireland")
+      .get(fullUrl + s"/$period/add-sales-from-northern-ireland")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postAddSalesFromNi(answer: Boolean) =
+  def postAddSalesFromNi(period: String, answer: Boolean) =
     http("Post Add Sales From NI Country")
-      .post(fullUrl + "/2021-Q3/add-sales-from-northern-ireland?incompletePromptShown=false")
+      .post(fullUrl + s"/$period/add-sales-from-northern-ireland?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", answer)
       .check(status.in(200, 303))
@@ -190,113 +212,113 @@ object ReturnsRequests extends ServicesConfiguration {
       .formParam("value", answer)
       .check(status.in(200, 303))
 
-  def getCountryOfSaleFromEu(index: Int) =
+  def getCountryOfSaleFromEu(period: String, index: Int) =
     http("Get Country Of Sale From EU page")
-      .get(fullUrl + s"/2021-Q3/eu-country-sold-from/$index")
+      .get(fullUrl + s"/$period/eu-country-sold-from/$index")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postCountryOfSaleFromEu(index: Int, countryCode: String) =
+  def postCountryOfSaleFromEu(period: String, index: Int, countryCode: String) =
     http("Post Country Of Sale From EU")
-      .post(fullUrl + s"/2021-Q3/eu-country-sold-from/$index")
+      .post(fullUrl + s"/$period/eu-country-sold-from/$index")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", countryCode)
       .check(status.in(200, 303))
 
-  def getCountryOfConsumptionFromEu(countryFrom: Int, countryTo: Int) =
+  def getCountryOfConsumptionFromEu(period: String, countryFrom: Int, countryTo: Int) =
     http("Get Country Of Consumption From EU page")
-      .get(fullUrl + s"/2021-Q3/eu-country-sold-to/$countryFrom/$countryTo")
+      .get(fullUrl + s"/$period/eu-country-sold-to/$countryFrom/$countryTo")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postCountryOfConsumptionFromEu(countryFrom: Int, countryTo: Int, countryCode: String) =
+  def postCountryOfConsumptionFromEu(period: String, countryFrom: Int, countryTo: Int, countryCode: String) =
     http("Post Country Of Consumption From EU")
-      .post(fullUrl + s"/2021-Q3/eu-country-sold-to/$countryFrom/$countryTo")
+      .post(fullUrl + s"/$period/eu-country-sold-to/$countryFrom/$countryTo")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", countryCode)
       .check(status.in(200, 303))
 
-  def getVatRatesFromEu(countryFrom: Int, countryTo: Int) =
+  def getVatRatesFromEu(period: String, countryFrom: Int, countryTo: Int) =
     http("Get Vat Rates From EU page")
-      .get(fullUrl + s"/2021-Q3/eu-vat-rates-from-eu/$countryFrom/$countryTo")
+      .get(fullUrl + s"/$period/eu-vat-rates-from-eu/$countryFrom/$countryTo")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postVatRatesFromEu(countryFrom: Int, countryTo: Int, vatRate: String) =
+  def postVatRatesFromEu(period: String, countryFrom: Int, countryTo: Int, vatRate: String) =
     http("Post Vat Rates From EU")
-      .post(fullUrl + s"/2021-Q3/eu-vat-rates-from-eu/$countryFrom/$countryTo")
+      .post(fullUrl + s"/$period/eu-vat-rates-from-eu/$countryFrom/$countryTo")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value[0]", vatRate)
       .check(status.in(200, 303))
 
-  def getNetValueOfSalesFromEu(countryFromIndex: Int, countryToIndex: Int, vatRateIndex: Int) =
+  def getNetValueOfSalesFromEu(period: String, countryFromIndex: Int, countryToIndex: Int, vatRateIndex: Int) =
     http("Get Net Value of Sales From EU page")
-      .get(fullUrl + s"/2021-Q3/eu-sales-from-eu/$countryFromIndex/$countryToIndex/$vatRateIndex")
+      .get(fullUrl + s"/$period/eu-sales-from-eu/$countryFromIndex/$countryToIndex/$vatRateIndex")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postNetValueOfSalesFromEu(countryFromIndex: Int, countryToIndex: Int, vatRateIndex: Int) =
+  def postNetValueOfSalesFromEu(period: String, countryFromIndex: Int, countryToIndex: Int, vatRateIndex: Int) =
     http("Post Net Value of Sales From EU Country")
-      .post(fullUrl + s"/2021-Q3/eu-sales-from-eu/$countryFromIndex/$countryToIndex/$vatRateIndex")
+      .post(fullUrl + s"/$period/eu-sales-from-eu/$countryFromIndex/$countryToIndex/$vatRateIndex")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", "50000")
       .check(status.in(200, 303))
 
-  def getVatOnSalesFromEu(countryFromIndex: Int, countryToIndex: Int, vatRateIndex: Int) =
+  def getVatOnSalesFromEu(period: String, countryFromIndex: Int, countryToIndex: Int, vatRateIndex: Int) =
     http("Get VAT on Sales From EU page")
-      .get(fullUrl + s"/2021-Q3/vat-on-sales-from-eu/$countryFromIndex/$countryToIndex/$vatRateIndex")
+      .get(fullUrl + s"/$period/vat-on-sales-from-eu/$countryFromIndex/$countryToIndex/$vatRateIndex")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postVatOnSalesFromEu(countryFromIndex: Int, countryToIndex: Int, vatRateIndex: Int) =
+  def postVatOnSalesFromEu(period: String, countryFromIndex: Int, countryToIndex: Int, vatRateIndex: Int) =
     http("Post VAT on Sales From EU Country")
-      .post(fullUrl + s"/2021-Q3/vat-on-sales-from-eu/$countryFromIndex/$countryToIndex/$vatRateIndex")
+      .post(fullUrl + s"/$period/vat-on-sales-from-eu/$countryFromIndex/$countryToIndex/$vatRateIndex")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("choice", "standard")
       .check(status.in(200, 303))
 
-  def getCheckSalesToEu(countryFrom: Int, countryTo: Int) =
+  def getCheckSalesToEu(period: String, countryFrom: Int, countryTo: Int) =
     http("Get Check Sales To EU page")
-      .get(fullUrl + s"/2021-Q3/check-sales-from-eu/$countryFrom/$countryTo")
+      .get(fullUrl + s"/$period/check-sales-from-eu/$countryFrom/$countryTo")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postCheckSalesToEu(countryFrom: Int, countryTo: Int) =
+  def postCheckSalesToEu(period: String, countryFrom: Int, countryTo: Int) =
     http("Post Check Sales To EU")
-      .post(fullUrl + s"/2021-Q3/check-sales-from-eu/$countryFrom/$countryTo?incompletePromptShown=false")
+      .post(fullUrl + s"/$period/check-sales-from-eu/$countryFrom/$countryTo?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.in(200, 303))
 
-  def getAddSalesToEu(index: Int) =
+  def getAddSalesToEu(period: String, index: Int) =
     http("Get Add Sales To EU page")
-      .get(fullUrl + s"/2021-Q3/add-sales-from-eu-to-eu/$index")
+      .get(fullUrl + s"/$period/add-sales-from-eu-to-eu/$index")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postAddSalesToEu(index: Int, answer: Boolean) =
+  def postAddSalesToEu(period: String, index: Int, answer: Boolean) =
     http("Post Add Sales To EU")
-      .post(fullUrl + s"/2021-Q3/add-sales-from-eu-to-eu/$index?incompletePromptShown=false")
+      .post(fullUrl + s"/$period/add-sales-from-eu-to-eu/$index?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", answer)
       .check(status.in(200, 303))
 
-  def getAddSalesFromEu =
+  def getAddSalesFromEu(period: String) =
     http("Get Add Sales From EU page")
-      .get(fullUrl + "/2021-Q3/add-sales-from-eu")
+      .get(fullUrl + s"/$period/add-sales-from-eu")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postAddSalesFromEu(answer: Boolean) =
+  def postAddSalesFromEu(period: String, answer: Boolean) =
     http("Post Add Sales From EU")
-      .post(fullUrl + "/2021-Q3/add-sales-from-eu?incompletePromptShown=false")
+      .post(fullUrl + s"/$period/add-sales-from-eu?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", answer)
       .check(status.in(200, 303))
