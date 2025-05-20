@@ -21,6 +21,8 @@ import io.gatling.core.session.Expression
 import io.gatling.http.Predef._
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
 
+import java.time.LocalDate
+
 object ReturnsRequests extends ServicesConfiguration {
 
   val baseUrl: String     = baseUrlFor("one-stop-shop-returns-frontend")
@@ -29,6 +31,8 @@ object ReturnsRequests extends ServicesConfiguration {
   val fullUrl: String     = baseUrl + route
 
   val loginUrl = baseUrlFor("auth-login-stub")
+
+  val twoYearsAgo = LocalDate.now().minusYears(2).getYear.toString
 
   def inputSelectorByName(name: String): Expression[String] = s"input[name='$name']"
 
@@ -350,124 +354,124 @@ object ReturnsRequests extends ServicesConfiguration {
 
   def getSubmittedReturn =
     http("Get Submitted Return page")
-      .get(fullUrl + "/past-returns/2021-Q3")
+      .get(fullUrl + s"/past-returns/$twoYearsAgo-Q3")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(status.in(200))
 
   def getCorrectPreviousReturn =
     http("Get Correct Previous Return page")
-      .get(fullUrl + "/2021-Q4/correct-previous-return")
+      .get(fullUrl + s"/$twoYearsAgo-Q4/correct-previous-return")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postCorrectPreviousReturn =
     http("Post Correct Previous Return")
-      .post(fullUrl + "/2021-Q4/correct-previous-return")
+      .post(fullUrl + s"/$twoYearsAgo-Q4/correct-previous-return")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", true)
       .check(status.in(200, 303))
 
   def getCorrectionReturnSinglePeriod =
     http("Get Correction Return Single Period page")
-      .get(fullUrl + "/2021-Q4/correction-return-single-period/1")
+      .get(fullUrl + s"/$twoYearsAgo-Q4/correction-return-single-period/1")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postCorrectionReturnSinglePeriod =
     http("Post Correction Return Single Period")
-      .post(fullUrl + "/2021-Q4/correction-return-single-period/1")
+      .post(fullUrl + s"/$twoYearsAgo-Q4/correction-return-single-period/1")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", true)
       .check(status.in(200, 303))
 
   def getCorrectionCountry =
     http("Get Correction Country page")
-      .get(fullUrl + "/2021-Q4/correction-country/1/1")
+      .get(fullUrl + s"/$twoYearsAgo-Q4/correction-country/1/1")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postCorrectionCountry(countryCode: String) =
     http("Post Correction Country")
-      .post(fullUrl + "/2021-Q4/correction-country/1/1")
+      .post(fullUrl + s"/$twoYearsAgo-Q4/correction-country/1/1")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", countryCode)
       .check(status.in(200, 303))
 
   def getUndeclaredCountryCorrection =
     http("Get Undeclared Country Correction page")
-      .get(fullUrl + "/2021-Q4/add-new-country/1/1")
+      .get(fullUrl + s"/$twoYearsAgo-Q4/add-new-country/1/1")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postUndeclaredCountryCorrection =
     http("Post Undeclared Country Correction")
-      .post(fullUrl + "/2021-Q4/add-new-country/1/1")
+      .post(fullUrl + s"/$twoYearsAgo-Q4/add-new-country/1/1")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", true)
       .check(status.in(200, 303))
 
   def getCountryVatCorrection =
     http("Get Country VAT Correction page")
-      .get(fullUrl + "/2021-Q4/country-vat-correction-amount/1/1?undeclaredCountry=true")
+      .get(fullUrl + s"/$twoYearsAgo-Q4/country-vat-correction-amount/1/1?undeclaredCountry=true")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postCountryVatCorrection(vatAmount: String) =
     http("Post Country VAT Correction")
-      .post(fullUrl + "/2021-Q4/country-vat-correction-amount/1/1?undeclaredCountry=true")
+      .post(fullUrl + s"/$twoYearsAgo-Q4/country-vat-correction-amount/1/1?undeclaredCountry=true")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", vatAmount)
       .check(status.in(200, 303))
 
   def getVatPayableConfirm =
     http("Get VAT Payable Confirm page")
-      .get(fullUrl + "/2021-Q4/vat-payable-confirm/1/1")
+      .get(fullUrl + s"/$twoYearsAgo-Q4/vat-payable-confirm/1/1")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postVatPayableConfirm =
     http("Post VAT Payable Confirm")
-      .post(fullUrl + "/2021-Q4/vat-payable-confirm/1/1")
+      .post(fullUrl + s"/$twoYearsAgo-Q4/vat-payable-confirm/1/1")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", true)
       .check(status.in(200, 303))
 
   def getVatPayableCheck =
     http("Get VAT Payable Check page")
-      .get(fullUrl + "/2021-Q4/vat-payable-check/1/1")
+      .get(fullUrl + s"/$twoYearsAgo-Q4/vat-payable-check/1/1")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(status.in(200))
 
   def getVatCorrectionsList =
     http("Get VAT Corrections List page")
-      .get(fullUrl + "/2021-Q4/vat-correction-list/1")
+      .get(fullUrl + s"/$twoYearsAgo-Q4/vat-correction-list/1")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postVatCorrectionsList =
     http("Post VAT Corrections List")
-      .post(fullUrl + "/2021-Q4/vat-correction-list/1?incompletePromptShown=false")
+      .post(fullUrl + s"/$twoYearsAgo-Q4/vat-correction-list/1?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .formParam("value", false)
       .check(status.in(200, 303))
 
   def getVatCorrectionPeriods =
     http("Get VAT Period Corrections List page")
-      .get(fullUrl + "/2021-Q4/vat-correction-periods")
+      .get(fullUrl + s"/$twoYearsAgo-Q4/vat-correction-periods")
       .header("Cookie", "mdtp=${mdtpCookie}")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
   def postVatCorrectionPeriods =
     http("Post VAT Period Corrections List")
-      .post(fullUrl + "/2021-Q4/vat-correction-periods?incompletePromptShown=false")
+      .post(fullUrl + s"/$twoYearsAgo-Q4/vat-correction-periods?incompletePromptShown=false")
       .formParam("csrfToken", "${csrfToken}")
       .check(status.in(200, 303))
 }
