@@ -28,11 +28,6 @@ class ReturnsSimulation extends PerformanceTestRunner {
 
   val twoYearsAgo = LocalDate.now().minusYears(2).getYear.toString
 
-  before {
-    println("Clearing the performance tests accounts from the database")
-    clearAll(s"$returnsBaseUrl/pay-vat-on-goods-sold-to-eu/northern-ireland-returns-payments/test-only/delete-accounts")
-  }
-
   setup("multipleReturns", "Two Sequential Returns Journey - Strategic Returns off") withRequests (
     goToAuthLoginPage,
     upFrontAuthLoginStrategicOff,
