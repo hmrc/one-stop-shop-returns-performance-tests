@@ -18,7 +18,6 @@ package uk.gov.hmrc.perftests.returns
 
 import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
 import uk.gov.hmrc.perftests.returns.ReturnsRequests._
-import utility.Client.clearAll
 
 import java.time.LocalDate
 
