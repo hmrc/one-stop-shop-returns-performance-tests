@@ -20,6 +20,7 @@ import io.gatling.core.Predef._
 import io.gatling.core.session.Expression
 import io.gatling.http.Predef._
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
+import uk.gov.hmrc.perftests.returns.Utils.FileUploadChecks._
 
 import java.time.LocalDate
 
@@ -41,29 +42,6 @@ object ReturnsRequests extends ServicesConfiguration {
       .get(loginUrl + s"/auth-login-stub/gg-sign-in")
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200, 303))
-
-  def upFrontAuthLoginStrategicOff =
-    http("Enter Auth login credentials ")
-      .post(loginUrl + s"/auth-login-stub/gg-sign-in")
-      .formParam("csrfToken", "#{csrfToken}")
-      .formParam("authorityId", "")
-      .formParam("gatewayToken", "")
-      .formParam("credentialStrength", "strong")
-      .formParam("confidenceLevel", "50")
-      .formParam("affinityGroup", "Organisation")
-      .formParam("email", "user@test.com")
-      .formParam("credentialRole", "User")
-      .formParam("redirectionUrl", homepageUrl)
-      .formParam("enrolment[0].name", "HMRC-MTD-VAT")
-      .formParam("enrolment[0].taxIdentifier[0].name", "VRN")
-      .formParam("enrolment[0].taxIdentifier[0].value", "#{multipleReturnsVrn}")
-      .formParam("enrolment[0].state", "Activated")
-      .formParam("enrolment[1].name", "HMRC-OSS-ORG")
-      .formParam("enrolment[1].taxIdentifier[0].name", "VRN")
-      .formParam("enrolment[1].taxIdentifier[0].value", "#{multipleReturnsVrn}")
-      .formParam("enrolment[1].state", "Activated")
-      .check(status.in(200, 303))
-      .check(headerRegex("Set-Cookie", """mdtp=(.*)""").saveAs("mdtpCookie"))
 
   def upFrontAuthLoginStrategicOn =
     http("Enter Auth login credentials ")
@@ -107,6 +85,92 @@ object ReturnsRequests extends ServicesConfiguration {
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", true)
       .check(status.in(200, 303))
+
+  def getWantToUploadFile(period: String) =
+    http("Get Want To Upload File page")
+      .get(fullUrl + s"/$period/want-to-upload-file")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
+      .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.in(200))
+
+  def testWantToUploadFile(period: String, answer: Boolean) =
+    http("Post Want To Upload File")
+      .post(fullUrl + s"/$period/want-to-upload-file")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", answer)
+      .check(status.in(200, 303))
+
+  def postWantToUploadFile(period: String, answer: Boolean) =
+    if (answer) {
+      testWantToUploadFile(period, answer)
+        .check(header("Location").is(s"$route/$period/file-upload"))
+    } else {
+      testWantToUploadFile(period, answer)
+        .check(header("Location").is(s"$route/$period/sales-from-northern-ireland"))
+    }
+
+  def getFileUpload(period: String) =
+    http("Get File Upload page")
+      .get(fullUrl + s"/$period/file-upload")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
+      .check(status.in(200))
+      .check(saveFileUploadUrl)
+      .check(saveCallBack)
+      .check(saveAmazonDate)
+      .check(saveSuccessRedirect)
+      .check(saveAmazonCredential)
+      .check(saveUpscanInitiateResponse)
+      .check(saveUpscanInitiateReceived)
+      .check(saveAmazonMetaOriginalFileName)
+      .check(saveAMZMetaRequestId)
+      .check(saveAmazonAlgorithm)
+      .check(saveKey)
+      .check(saveAcl)
+      .check(saveAMZMetaSessionId)
+      .check(saveConsumingService)
+      .check(saveAmazonSignature)
+      .check(saveErrorRedirect)
+      .check(savePolicy)
+
+  def postFileUpload(period: String) =
+    http("Post File Upload page")
+      .post(s => s("fileUploadAmazonUrl").as[String])
+      .header("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundaryjoqtomO5urVl5B6N")
+      .asMultipartForm
+      .bodyPart(StringBodyPart("x-amz-meta-callback-url", "#{callBack}"))
+      .bodyPart(StringBodyPart("x-amz-date", "#{amazonDate}"))
+      .bodyPart(StringBodyPart("success_action_redirect", "#{successRedirect}"))
+      .bodyPart(StringBodyPart("x-amz-credential", "#{amazonCredential}"))
+      .bodyPart(StringBodyPart("x-amz-meta-upscan-initiate-response", "#{upscanInitiateResponse}"))
+      .bodyPart(StringBodyPart("x-amz-meta-upscan-initiate-received", "#{upscanInitiateReceived}"))
+      .bodyPart(StringBodyPart("x-amz-meta-request-id", "#{amazonMetaRequestID}"))
+      .bodyPart(StringBodyPart("x-amz-meta-original-filename", "#{amazonMetaOriginalFileName}"))
+      .bodyPart(StringBodyPart("x-amz-algorithm", "#{amazonAlgorithm}"))
+      .bodyPart(StringBodyPart("key", "#{key}"))
+      .bodyPart(StringBodyPart("acl", "#{acl}"))
+      .bodyPart(StringBodyPart("x-amz-signature", "#{amazonSignature}"))
+      .bodyPart(StringBodyPart("error_action_redirect", "#{errorRedirect}"))
+      .bodyPart(StringBodyPart("x-amz-meta-session-id", "#{amazonMetaSessionID}"))
+      .bodyPart(StringBodyPart("x-amz-meta-consuming-service", "#{consumingService}"))
+      .bodyPart(StringBodyPart("policy", "#{policy}"))
+      .bodyPart(RawFileBodyPart("file", "data/fileUpload.csv"))
+      .check(status.in(200, 303))
+      .check(currentLocation.saveAs("bulkUploadSuccessUrl"))
+      .check(header("Location").transform(_.contains(s"$route/$period/file-uploaded")).is(true))
+      .check(header("Location").saveAs("fileUpload"))
+
+  def getFileUploaded =
+    http("Get File Uploaded page")
+      .get("#{fileUpload}")
+      .check(status.in(200))
+
+  def postFileUploaded(period: String) =
+    http("Post File Uploaded page")
+      .post("#{fileUpload}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", true)
+      .check(status.in(200, 303))
+      .check(header("Location").is(s"$route/$period/correct-previous-return"))
 
   def getSoldGoodsFromNi(period: String) =
     http("Get Sold Goods From Ni page")
@@ -368,11 +432,11 @@ object ReturnsRequests extends ServicesConfiguration {
       .check(css(inputSelectorByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.in(200))
 
-  def postCorrectPreviousReturn =
+  def postCorrectPreviousReturn(answer: Boolean) =
     http("Post Correct Previous Return")
       .post(fullUrl + s"/$twoYearsAgo-Q4/correct-previous-return")
       .formParam("csrfToken", "#{csrfToken}")
-      .formParam("value", true)
+      .formParam("value", answer)
       .check(status.in(200, 303))
 
   def getCorrectionReturnSinglePeriod =
