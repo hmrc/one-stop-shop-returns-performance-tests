@@ -187,13 +187,15 @@ object ReturnsRequests extends ServicesConfiguration {
       .get("#{fileUpload}")
       .check(status.in(200))
 
-  def postFileUploaded(period: String) =
+  def postFileUploaded(period: String) = {
+    pause(5000)
     http("Post File Uploaded page")
       .post("#{fileUpload}")
       .formParam("csrfToken", "#{csrfToken}")
       .formParam("value", true)
       .check(status.in(200, 303))
       .check(header("Location").is(s"$route/$period/correct-previous-return"))
+  }
 
   def getSoldGoodsFromNi(period: String) =
     http("Get Sold Goods From Ni page")
