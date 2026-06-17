@@ -134,7 +134,7 @@ class ReturnsSimulation extends PerformanceTestRunner {
 
   setup("fileUpload", "Return using File Upload") withRequests (
     goToAuthLoginPage,
-    upFrontAuthLoginStrategicOn,
+    upFrontAuthLoginFileUpload,
     getHomePage,
     getStartReturn(s"$twoYearsAgo-Q4"),
     postStartReturn(s"$twoYearsAgo-Q4"),
