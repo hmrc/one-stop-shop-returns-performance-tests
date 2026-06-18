@@ -16,16 +16,21 @@
 
 package uk.gov.hmrc.perftests.returns
 
+import io.gatling.core.Predef.pause
+import io.gatling.core.action.builder.ActionBuilder
 import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
 import uk.gov.hmrc.perftests.returns.ReturnsRequests._
 
 import java.time.LocalDate
+import scala.concurrent.duration.{Duration, SECONDS}
 
 class ReturnsSimulation extends PerformanceTestRunner {
 
   val returnsBaseUrl: String = baseUrlFor("one-stop-shop-returns-frontend")
 
   val twoYearsAgo = LocalDate.now().minusYears(2).getYear.toString
+
+  val pauseBuilder: ActionBuilder = pause(Duration(5, SECONDS)).actionBuilders.head
 
   setup("singleReturn", "Single Return with Corrections Journey") withRequests (
     goToAuthLoginPage,
@@ -132,17 +137,19 @@ class ReturnsSimulation extends PerformanceTestRunner {
     getSubmittedReturn
   )
 
-  setup("fileUpload", "Return using File Upload") withRequests (
+  setup("fileUpload", "Return using File Upload") withActions (
     goToAuthLoginPage,
     upFrontAuthLoginFileUpload,
     getHomePage,
     getStartReturn(s"$twoYearsAgo-Q4"),
     postStartReturn(s"$twoYearsAgo-Q4"),
     getWantToUploadFile(s"$twoYearsAgo-Q4"),
-    postWantToUploadFile(s"$twoYearsAgo-Q4", true),
+    postWantToUploadFile(s"$twoYearsAgo-Q4", answer = true),
     getFileUpload(s"$twoYearsAgo-Q4"),
     postFileUpload(s"$twoYearsAgo-Q4"),
+    pauseBuilder,
     getFileUploaded,
+    pauseBuilder,
     postFileUploaded(s"$twoYearsAgo-Q4"),
     getCorrectPreviousReturn,
     postCorrectPreviousReturn(false),
