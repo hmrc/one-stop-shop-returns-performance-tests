@@ -129,7 +129,7 @@ object ReturnsRequests extends ServicesConfiguration {
         .check(header("Location").is(s"$route/$period/file-upload"))
     } else {
       testWantToUploadFile(period, answer)
-        .check(header("Location").is(s"$route/$period/sales-from-northern-ireland"))
+        .check(header("Location").is(s"$route/$period/eu-country-from-northern-ireland/1"))
     }
 
   def getFileUpload(period: String) =
